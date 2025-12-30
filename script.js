@@ -16,8 +16,11 @@ function onYouTubeIframeAPIReady() {
 }
 
 function onPlayerReady(event) {
-    event.target.playVideo();
-    event.target.setVolume(100);
+    // Intentar reproducir a los 2 segundos
+    setTimeout(() => {
+        event.target.playVideo();
+        event.target.setVolume(100);
+    }, 2000);
 }
 
 // Interaction Handler
