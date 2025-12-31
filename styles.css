@@ -3,6 +3,7 @@
     --bg-gradient: radial-gradient(circle at 50% -20%, #1a1a40, #050510 70%);
     --gold: #d4af37;
     --gold-light: #f7e7ce;
+    --gold-dark: #b8860b;
     --text-main: #f0f0f0;
     --text-muted: #a0a0a0;
     --glass-bg: rgba(20, 20, 30, 0.6);
@@ -15,6 +16,8 @@
     margin: 0;
     padding: 0;
     box-sizing: border-box;
+    -webkit-tap-highlight-color: transparent;
+    /* No blue highlight on mobile */
 }
 
 body {
@@ -42,7 +45,6 @@ body {
     padding: 24px;
     width: 100%;
     max-width: 500px;
-    /* Slimmer for elegance */
     z-index: 10;
     perspective: 1000px;
 }
@@ -53,7 +55,6 @@ body {
     -webkit-backdrop-filter: blur(20px);
     border: 1px solid var(--glass-border);
     border-radius: 4px;
-    /* Less rounded for more formality */
     padding: 60px 40px;
     text-align: center;
     box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
@@ -62,7 +63,6 @@ body {
     animation: fadeInUp 1.5s cubic-bezier(0.2, 0.8, 0.2, 1);
 }
 
-/* Golden border accent top/bottom */
 .glass-panel::before,
 .glass-panel::after {
     content: '';
@@ -96,7 +96,7 @@ body {
     font-family: var(--font-serif);
     font-size: 5rem;
     line-height: 1;
-    background: linear-gradient(135deg, var(--gold-light) 0%, var(--gold) 50%, #b8860b 100%);
+    background: linear-gradient(135deg, var(--gold-light) 0%, var(--gold) 50%, var(--gold-dark) 100%);
     -webkit-background-clip: text;
     background-clip: text;
     color: transparent;
@@ -131,6 +131,7 @@ body {
 
 .signature-block {
     margin-top: 40px;
+    margin-bottom: 40px;
 }
 
 .regards {
@@ -143,21 +144,67 @@ body {
 
 .signer-name {
     font-family: var(--font-serif);
-    /* Using serif for signature too */
     font-size: 1.8rem;
     color: var(--gold-light);
     font-style: italic;
 }
 
-.interaction-hint {
-    position: absolute;
-    bottom: 15px;
-    left: 0;
-    width: 100%;
-    font-size: 0.65rem;
-    color: rgba(255, 255, 255, 0.3);
+/* --- New Button Styles --- */
+#start-container {
+    margin-top: 20px;
+    transition: opacity 0.5s ease;
+}
+
+.gold-button {
+    background: linear-gradient(45deg, var(--gold), var(--gold-light), var(--gold));
+    background-size: 200% auto;
+    border: none;
+    padding: 15px 40px;
+    border-radius: 50px;
+    font-family: var(--font-serif);
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: var(--bg-deep);
+    cursor: pointer;
+    box-shadow: 0 0 20px rgba(212, 175, 55, 0.4);
+    transition: all 0.3s ease;
+    animation: pulseButton 2s infinite;
     text-transform: uppercase;
     letter-spacing: 1px;
+}
+
+.gold-button:hover {
+    transform: scale(1.05);
+    background-position: right center;
+    box-shadow: 0 0 30px rgba(212, 175, 55, 0.6);
+}
+
+.gold-button:active {
+    transform: scale(0.95);
+}
+
+.start-label {
+    display: block;
+    font-size: 0.8rem;
+    color: var(--gold-light);
+    margin-top: 10px;
+    font-style: italic;
+    opacity: 0.8;
+}
+
+.interaction-hint {
+    font-size: 0.75rem;
+    color: rgba(255, 255, 255, 0.4);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-top: 20px;
+    transition: opacity 1s ease;
+}
+
+.hidden {
+    display: none !important;
+    opacity: 0;
+    pointer-events: none;
 }
 
 /* YouTube Hidden */
@@ -167,7 +214,6 @@ body {
     visibility: hidden;
 }
 
-/* Animations using keyframes */
 @keyframes fadeInUp {
     from {
         opacity: 0;
@@ -177,6 +223,20 @@ body {
     to {
         opacity: 1;
         transform: translateY(0);
+    }
+}
+
+@keyframes pulseButton {
+    0% {
+        box-shadow: 0 0 0 0 rgba(212, 175, 55, 0.7);
+    }
+
+    70% {
+        box-shadow: 0 0 0 15px rgba(212, 175, 55, 0);
+    }
+
+    100% {
+        box-shadow: 0 0 0 0 rgba(0, 0, 0, 0);
     }
 }
 

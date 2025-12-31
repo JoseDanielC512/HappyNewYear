@@ -10,31 +10,35 @@ function onYouTubeIframeAPIReady() {
         height: '0',
         width: '0',
         videoId: 'NTmWcpfYpOE',
-        playerVars: { 'autoplay': 1, 'controls': 0, 'loop': 1, 'playlist': 'NTmWcpfYpOE' },
+        playerVars: { 'autoplay': 0, 'controls': 0, 'loop': 1, 'playlist': 'NTmWcpfYpOE' }, // Autoplay OFF initially
         events: { 'onReady': onPlayerReady }
     });
 }
 
 function onPlayerReady(event) {
-    // Intentar reproducir a los 2 segundos
-    setTimeout(() => {
-        event.target.playVideo();
-        event.target.setVolume(100);
-    }, 2000);
+    // Listo para reproducir, espera al botón
+    const startBtn = document.getElementById('start-btn');
+    startBtn.addEventListener('click', () => {
+        startParty();
+    });
 }
 
-// Interaction Handler
-document.addEventListener('click', handleInteraction);
-document.addEventListener('touchstart', handleInteraction);
+function startParty() {
+    if (player) {
+        player.playVideo();
+        player.setVolume(100);
+    }
 
-function handleInteraction(e) {
-    if (player && player.getPlayerState() !== 1) player.playVideo();
+    // UI Swap
+    document.getElementById('start-container').classList.add('hidden');
+    document.getElementById('music-credit').classList.remove('hidden');
 
-    // Launch fireworks at click position
-    const x = e.clientX || (e.touches && e.touches[0].clientX) || window.innerWidth / 2;
-    const y = e.clientY || (e.touches && e.touches[0].clientY) || window.innerHeight / 2;
-    launchMoredetails(x, y);
+    // Launch initial big explosion
+    launchMoredetails(window.innerWidth / 2, window.innerHeight / 2);
+    launchMoredetails(window.innerWidth / 2 - 100, window.innerHeight / 2 - 100);
+    launchMoredetails(window.innerWidth / 2 + 100, window.innerHeight / 2 - 100);
 }
+
 
 // --- Luxury Particle System ---
 const canvas = document.getElementById('luxuryCanvas');
@@ -50,7 +54,6 @@ resize();
 
 const particles = [];
 const goldPalette = ['#d4af37', '#f7e7ce', '#b8860b', '#ffffff'];
-// Food emojis kept as requested, but maybe slightly smaller/classier falling
 const foodEmojis = ['🥂', '🍾', '🍇', '🍓', '🍰', '🍫'];
 
 class Particle {
@@ -72,7 +75,6 @@ class Particle {
             this.vx = Math.cos(angle) * speed;
             this.vy = Math.sin(angle) * speed;
             this.size = Math.random() * 3;
-            // Mixed vibrant colors for fireworks to keep it 'contentoso'
             const vibrantColors = ['#ff0055', '#00ffaa', '#ffcc00', '#00ffff', '#d4af37'];
             this.color = vibrantColors[Math.floor(Math.random() * vibrantColors.length)];
             this.alpha = 1;
@@ -87,7 +89,7 @@ class Particle {
             this.friction = 0.99;
             this.life = 200;
             this.alpha = 1;
-            this.size = 24; // slightly smaller
+            this.size = 24;
         }
     }
 
@@ -118,8 +120,6 @@ class Particle {
             ctx.beginPath();
             ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
             ctx.fill();
-
-            // Add sparkle glow
             if (this.kind === 'firework') {
                 ctx.shadowBlur = 10;
                 ctx.shadowColor = this.color;
@@ -129,20 +129,31 @@ class Particle {
     }
 }
 
-// Background ambient gold dust
 for (let i = 0; i < 50; i++) particles.push(new Particle(Math.random() * w, Math.random() * h, 'ambient'));
 
 function launchMoredetails(x, y) {
-    // Fireworks
     for (let i = 0; i < 40; i++) particles.push(new Particle(x, y, 'firework'));
-    // Champagne/Food
     for (let i = 0; i < 2; i++) particles.push(new Particle(x, y, 'food'));
 }
+
+// Extra: Global click still produces fireworks, but doesn't handle audio start logic anymore
+document.addEventListener('click', (e) => {
+    // Only if not clicking the button (to avoid double trigger if button logic handled elsewhere)
+    if (e.target.id !== 'start-btn') {
+        launchMoredetails(e.clientX, e.clientY);
+    }
+});
+document.addEventListener('touchstart', (e) => {
+    if (e.target.id !== 'start-btn') {
+        const x = e.touches[0].clientX;
+        const y = e.touches[0].clientY;
+        launchMoredetails(x, y);
+    }
+});
 
 function animate() {
     ctx.clearRect(0, 0, w, h);
 
-    // Draw Ambient (wrap around)
     particles.forEach(p => {
         if (p.kind === 'ambient') {
             if (p.x < 0) p.x = w;
@@ -154,14 +165,13 @@ function animate() {
         p.draw(ctx);
     });
 
-    // Remove dead particles
     for (let i = particles.length - 1; i >= 0; i--) {
         if (particles[i].kind !== 'ambient' && particles[i].life <= 0) {
             particles.splice(i, 1);
         }
     }
 
-    // Random auto-fireworks
+    // Still occasional auto-fireworks
     if (Math.random() < 0.02) {
         launchMoredetails(Math.random() * w, Math.random() * h * 0.7);
     }
