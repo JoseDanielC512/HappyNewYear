@@ -17,7 +17,6 @@
     padding: 0;
     box-sizing: border-box;
     -webkit-tap-highlight-color: transparent;
-    /* No blue highlight on mobile */
 }
 
 body {
@@ -45,8 +44,14 @@ body {
     padding: 24px;
     width: 100%;
     max-width: 500px;
+    /* Increased slightly for video possibly */
     z-index: 10;
     perspective: 1000px;
+    max-height: 95vh;
+    /* Prevent overflow on small screens */
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
 }
 
 .glass-panel {
@@ -55,13 +60,25 @@ body {
     -webkit-backdrop-filter: blur(20px);
     border: 1px solid var(--glass-border);
     border-radius: 4px;
-    padding: 60px 40px;
+    padding: 40px 30px;
+    /* Reduced padding for space */
     text-align: center;
     box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
     position: relative;
-    overflow: hidden;
+    overflow-y: auto;
+    /* Scroll if content (video) is too tall */
+    max-height: 90vh;
+    scrollbar-width: none;
+    /* Hide scrollbar Firefox */
     animation: fadeInUp 1.5s cubic-bezier(0.2, 0.8, 0.2, 1);
 }
+
+.glass-panel::-webkit-scrollbar {
+    display: none;
+}
+
+/* Hide scrollbar Chrome */
+
 
 .glass-panel::before,
 .glass-panel::after {
@@ -86,15 +103,16 @@ body {
     display: block;
     text-transform: uppercase;
     letter-spacing: 4px;
-    font-size: 0.75rem;
+    font-size: 0.7rem;
     color: var(--gold);
-    margin-bottom: 20px;
+    margin-bottom: 15px;
     opacity: 0.9;
 }
 
 .hero-title {
     font-family: var(--font-serif);
-    font-size: 5rem;
+    font-size: 4rem;
+    /* Adjusted for space */
     line-height: 1;
     background: linear-gradient(135deg, var(--gold-light) 0%, var(--gold) 50%, var(--gold-dark) 100%);
     -webkit-background-clip: text;
@@ -107,49 +125,69 @@ body {
 
 .hero-subtitle {
     font-family: var(--font-serif);
-    font-size: 1.5rem;
+    font-size: 1.2rem;
     font-style: italic;
     font-weight: 400;
     color: var(--text-main);
-    margin-bottom: 30px;
+    margin-bottom: 20px;
 }
 
 .divider {
     height: 1px;
     width: 40px;
     background: rgba(255, 255, 255, 0.2);
-    margin: 0 auto 30px;
+    margin: 0 auto 20px;
 }
 
 .message-body {
-    font-size: 1rem;
-    line-height: 1.8;
+    font-size: 0.9rem;
+    line-height: 1.6;
     color: #cccccc;
     font-weight: 300;
-    margin-bottom: 40px;
+    margin-bottom: 20px;
 }
 
+/* --- Video Styles --- */
+.video-wrapper {
+    margin: 20px 0;
+    position: relative;
+    width: 100%;
+    border-radius: 8px;
+    padding: 4px;
+    background: linear-gradient(45deg, var(--gold-dark), var(--gold-light));
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+    animation: zoomIn 1s ease-out;
+}
+
+#celebration-video {
+    width: 100%;
+    border-radius: 4px;
+    display: block;
+    /* mix-blend-mode: screen; Optional: merges black bg if video has it */
+}
+
+
 .signature-block {
-    margin-top: 40px;
-    margin-bottom: 40px;
+    margin-top: 30px;
+    margin-bottom: 30px;
 }
 
 .regards {
-    font-size: 0.8rem;
+    font-size: 0.7rem;
     text-transform: uppercase;
     letter-spacing: 2px;
     color: var(--text-muted);
-    margin-bottom: 10px;
+    margin-bottom: 5px;
 }
 
 .signer-name {
     font-family: var(--font-serif);
-    font-size: 1.8rem;
+    font-size: 1.5rem;
     color: var(--gold-light);
     font-style: italic;
 }
 
-/* --- New Button Styles --- */
+/* --- Button Styles --- */
 #start-container {
     margin-top: 20px;
     transition: opacity 0.5s ease;
@@ -159,10 +197,10 @@ body {
     background: linear-gradient(45deg, var(--gold), var(--gold-light), var(--gold));
     background-size: 200% auto;
     border: none;
-    padding: 15px 40px;
+    padding: 15px 35px;
     border-radius: 50px;
     font-family: var(--font-serif);
-    font-size: 1.1rem;
+    font-size: 1rem;
     font-weight: 700;
     color: var(--bg-deep);
     cursor: pointer;
@@ -179,13 +217,9 @@ body {
     box-shadow: 0 0 30px rgba(212, 175, 55, 0.6);
 }
 
-.gold-button:active {
-    transform: scale(0.95);
-}
-
 .start-label {
     display: block;
-    font-size: 0.8rem;
+    font-size: 0.75rem;
     color: var(--gold-light);
     margin-top: 10px;
     font-style: italic;
@@ -193,18 +227,16 @@ body {
 }
 
 .interaction-hint {
-    font-size: 0.75rem;
+    font-size: 0.7rem;
     color: rgba(255, 255, 255, 0.4);
     text-transform: uppercase;
     letter-spacing: 1px;
-    margin-top: 20px;
+    margin-top: 15px;
     transition: opacity 1s ease;
 }
 
 .hidden {
     display: none !important;
-    opacity: 0;
-    pointer-events: none;
 }
 
 /* YouTube Hidden */
@@ -226,6 +258,18 @@ body {
     }
 }
 
+@keyframes zoomIn {
+    from {
+        opacity: 0;
+        transform: scale(0.9);
+    }
+
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
 @keyframes pulseButton {
     0% {
         box-shadow: 0 0 0 0 rgba(212, 175, 55, 0.7);
@@ -242,14 +286,14 @@ body {
 
 @media (max-width: 600px) {
     .glass-panel {
-        padding: 40px 20px;
+        padding: 30px 15px;
     }
 
     .hero-title {
-        font-size: 4rem;
+        font-size: 3.5rem;
     }
 
     .message-body {
-        font-size: 0.95rem;
+        font-size: 0.9rem;
     }
 }

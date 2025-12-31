@@ -33,6 +33,15 @@ function startParty() {
     document.getElementById('start-container').classList.add('hidden');
     document.getElementById('music-credit').classList.remove('hidden');
 
+    // Show and play video
+    const videoContainer = document.getElementById('video-container');
+    const video = document.getElementById('celebration-video');
+
+    if (videoContainer && video) {
+        videoContainer.classList.remove('hidden');
+        video.play().catch(e => console.log("Video play error:", e));
+    }
+
     // Launch initial big explosion
     launchMoredetails(window.innerWidth / 2, window.innerHeight / 2);
     launchMoredetails(window.innerWidth / 2 - 100, window.innerHeight / 2 - 100);
